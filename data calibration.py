@@ -159,25 +159,6 @@ def get_peaks_master_wl(device, master_wl_peaks, df_air_minus_dark):
         return pixel_peaks
 
 
-#
-#
-# def get_peaks_master_wl_Aylas(device, master_wl_peaks, df_air_minus_dark):
-#     wl_peaks, pixel_peaks = get_peaks_qc(device)
-#     wl_peaks = np.insert(wl_peaks, [0, len(wl_peaks)], [400, 720])
-#
-#     if master_wl_peaks is not None:
-#         master_wl_peaks_no_hill = master_wl_peaks.take([0, 1, 3, 4, 5, 6, 7, 8, 9, 10])
-#         if not (wl_peaks == master_wl_peaks_no_hill).all():
-#             pixel_peaks = get_exact_peaks_pointwise(wl_peaks, pixel_peaks, master_wl_peaks_no_hill)
-#     slave_peak_3 = np.median(df_air_minus_dark.iloc[:, :300].to_numpy().argmax(1))
-#     pixel_peaks = np.insert(pixel_peaks, 2, slave_peak_3)
-#     wl_peaks = np.insert(wl_peaks, 2, 450)
-#     pixel_peaks = pixel_peaks.astype('int')
-#     if master_wl_peaks is None:
-#         return wl_peaks, pixel_peaks
-#     else:
-#         return pixel_peaks
-
 
 def xcalibration(slave_matrix, master_pixel_peaks, slave_pixel_peaks):
     ''' perform x calibration of slave matrix according to the peaks specified
@@ -444,18 +425,6 @@ def msc(input_data, reference=None):
 def preprocess_one(X, w=47, der=1):
     return snv(preprocess(msc(X,reference = ref_msc), w, der))
 
-def train_model(df_abs_batch, labels):
-    df_abs_batch = df_abs_batch.fillna(0)
-    X = df_abs_batch.to_numpy()
-    X_ = preprocess_one(X)
-    y = labels.to_numpy()
-
-    model = svm.SVC(kernel='rbf',C=100)
-    model.fit(X_,y)
-    cv = LeaveOneOut()
-    scores = cross_val_score(model, X, y, cv=cv)
-    score = np.nanmean(scores)
-    return int(round(score*100, 0))
 
 
 def get_sens_spec_CV(df_abs_xy, labels, df_master, labels_master, crop_left=0, crop_right=1024):
@@ -463,8 +432,8 @@ def get_sens_spec_CV(df_abs_xy, labels, df_master, labels_master, crop_left=0, c
     # labels_train, labels_test = train_test_split(labels, random_state=0, train_size=.5, stratify=labels)
     X = np.concatenate([df_master.to_numpy(), df_abs_xy.to_numpy()])
 
-    #ref = pickle.load(open('V0013_D614_ref_msc1', 'rb')).squeeze()
-    model = pickle.load(open('V0013_D614_snv_SG_w47_d1_msc_SVM', 'rb'))
+    #ref = pickle.load(open('V1', 'rb')).squeeze()
+    model = pickle.load(open('V00VM', 'rb'))
 
     X_ = preprocess_one(X, ref)
     y_slave = labels.to_numpy().squeeze()
@@ -493,27 +462,6 @@ def get_sens_spec_CV(df_abs_xy, labels, df_master, labels_master, crop_left=0, c
 
     return conf_accuracy, conf_sensitivity, conf_specificity
 
-
-
-# def get_sens_spec(df_abs_xy, labels, df_master, labels_master, crop_left=0, crop_right=1024):
-#     df_abs_batch_xy_train, df_abs_batch_xy_test = train_test_split(df_abs_xy, random_state=0, train_size=.5, stratify=labels)
-#     labels_train, labels_test = train_test_split(labels, random_state=0, train_size=.5, stratify=labels)
-#     X_train = np.concatenate([df_master.to_numpy(), df_abs_batch_xy_train.to_numpy()])
-#     y_train = np.concatenate([labels_master.to_numpy().squeeze(), labels_train.to_numpy().squeeze()])
-
-#     X_test = df_abs_batch_xy_test.to_numpy()
-
-#     model = loaded_model
-#     model.fit(preprocess_one(X_train),y_train)
-#     predict_test = model.predict(preprocess_one(X_test))
-#     conf_matrix = metrics.confusion_matrix(labels_test, predict_test)
-#     TP = conf_matrix[1][1]
-#     TN = conf_matrix[0][0]
-#     FP = conf_matrix[0][1]
-#     FN = conf_matrix[1][0]
-
-#     # calculate accuracy
-#     conf_accuracy = round(((TP + TN)*100 / (TP + TN + FP + FN)), 0)
 
 #     # calculate the sensitivity
 #     conf_sensitivity = round((TP*100 / (TP + FN)))
@@ -713,5 +661,5 @@ df_golden_x = xcalibration(df_golden_slave, master_pix_peaks, slave_pix_peaks)
 
     plt.suptitle(device, fontsize=20)
     plt.tight_layout()
-    plt.savefig('C:\')
+    plt.savefig('C:\...')
     plt.close()
