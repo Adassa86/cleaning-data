@@ -76,7 +76,7 @@ df_master = pickle.load(open(path_i  + 'D', 'rb'))
 
 # xcalibration.py
 
-path_qc = 'C:\\Users\\LibbyKosolapov\\OneDrive - virusight.co.il\\Documents\\Pilots\\Poria\\July\\QC\\'
+path_qc = 'C:\C\\'
 
 def add_edge_peaks(wl_peaks, pixel_peaks):
     ''' adds pixel values that corresponds to 420 nm and 700 nm
@@ -116,15 +116,6 @@ def get_exact_peaks_pointwise(wl_peaks, pixel_peaks, master_wl_peaks):
                 pixel_peaks_new.append(f(master_wl_peaks[i]))
         return pixel_peaks_new
 
-
-def two_point_line(A, B):
-    '''builds a linear function thruoght two points on 2D plane
-    A, B - tuples of points
-    output: f - linear function'''
-    m = (B[1]-A[1])/(B[0]-A[0])
-    def f(x):
-        return int(np.round(m*(x-A[0])+A[1], 0))
-    return f
 
 
 def get_peaks_qc(device):
@@ -589,7 +580,7 @@ df_peaks.loc[device] = slave_pix_peaks
 
     # slave_pix_peaks.insert(2, int(slave_peak_3))
 df_golden_x = xcalibration(df_golden_slave, master_pix_peaks, slave_pix_peaks)
-    df_golden_master = pickle.load(open('C:\\Users\\LibbyKosolapov\\OneDrive - virusight.co.il\\Documents\\Pilots\\\\Poria\\July\\golden_data_frames\\'+ f'{master_device}', 'rb'))
+    df_golden_master = pickle.load(open('C:\\ , 'rb'))
 
     # ycalibration
     ratios_df = df_golden_master/df_golden_x
@@ -722,5 +713,5 @@ df_golden_x = xcalibration(df_golden_slave, master_pix_peaks, slave_pix_peaks)
 
     plt.suptitle(device, fontsize=20)
     plt.tight_layout()
-    plt.savefig('C:\\Users\\LibbyKosolapov\\OneDrive - virusight.co.il\\Documents\\Pilots\\Poria\\July\\vizual_outliers\\' + f'{device}')
+    plt.savefig('C:\')
     plt.close()
